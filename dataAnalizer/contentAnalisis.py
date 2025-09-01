@@ -4,22 +4,21 @@ from datetime import datetime
 import google.generativeai as genai
 
 
-# Load the JSON data
-with open("resultless.json", "r", encoding="utf-8") as f:
+
+with open("results.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# --- Basic Metrics ---
+
 total_tweets = len(data)
 total_likes = sum(tweet.get("likes", 0) for tweet in data)
 total_comments = sum(tweet.get("replies", 0) for tweet in data)
 total_retweets = sum(tweet.get("retweets", 0) for tweet in data)
 total_engagement = total_likes + total_comments + total_retweets
 
-# Estimated reach = sum of followers of all authors
+
 total_reach_estimated = sum(tweet.get("user_followers", 0) for tweet in data)
 
-# --- Velocity (tweets per hour) ---
-# Parse timestamps
+
 timestamps = [datetime.strptime(tweet["created_at"], "%a %b %d %H:%M:%S %z %Y") for tweet in data]
 if timestamps:
     time_range = (max(timestamps) - min(timestamps)).total_seconds() / 3600
@@ -27,11 +26,11 @@ if timestamps:
 else:
     velocity_tph = 0
 
-# --- Most influential persons (by followers) ---
+
 influencers = sorted(data, key=lambda x: x.get("user_followers", 0), reverse=True)[:5]
 most_influential = [{"username": t["username"], "followers": t["user_followers"]} for t in influencers]
 
-# --- Most engaging posts ---
+
 engaging_posts = sorted(data, key=lambda x: (x.get("likes", 0) + x.get("replies", 0) + x.get("retweets", 0)), reverse=True)[:5]
 most_engaging = [{
     "id": t["id"],
@@ -39,19 +38,18 @@ most_engaging = [{
     "engagement": t.get("likes", 0) + t.get("replies", 0) + t.get("retweets", 0)
 } for t in engaging_posts]
 
-# --- Top hashtags ---
+
 hashtags = [h for t in data for h in t.get("hashtags", [])]
 top_hashtags = [h for h, _ in Counter(hashtags).most_common(5)]
 
-# --- Top mentioned users ---
+
 mentions = []
 for t in data:
     content = t.get("content", "")
     mentions.extend([word[1:] for word in content.split() if word.startswith("@")])
 top_mentions = [m for m, _ in Counter(mentions).most_common(5)]
 
-# --- New account ratio ---
-# Define "new" as created within last 1 year of the latest tweet
+
 if timestamps:
     latest_date = max(timestamps)
     one_year_ago = latest_date.replace(year=latest_date.year - 1)
@@ -60,7 +58,7 @@ if timestamps:
 else:
     new_account_ratio = 0
 
-# --- Final Report ---
+
 report = {
     "total_tweets": total_tweets,
     "total_likes": total_likes,
@@ -76,32 +74,18 @@ report = {
     "new_account_ratio": new_account_ratio
 }
 
-# Print nicely
-# import pprint
-# pprint.pprint(report)
 
-#saving in json
-# with open("check1.json", "w", encoding="utf-8") as f:
-#     json.dump(report, f, indent=4)
+
+genai.configure(api_key="")  #google api key
 
 
 
-
-# 🔑 Configure Gemini API key
-genai.configure(api_key="AIzaSyAi_lb7Lt4hSIFQtI02-MvUNbQaQaU-0TE")
-
-# Load tweets from result.json
-# with open("resultless.json", "r", encoding="utf-8") as f:
-#     data = json.load(f)
-
-# Extract tweet contents
 tweets = [item["content"] for item in data if "content" in item]
 
-# Join tweets into a block
+
 tweets_block = "\n".join([f"- {t}" for t in tweets])
 
 
-# Build the prompt (no system role since Gemini doesn't support it)
 prompt = f"""
 You are a senior social-media campaign analyst. 
 You will receive a collection of tweets about a single campaign. 
@@ -140,22 +124,10 @@ OUTPUT STRICTLY IN THIS JSON FORMAT (no extra text):
 }}
 """
 
-
-
-# Call Gemini
 model = genai.GenerativeModel("gemini-2.0-flash")
 response = model.generate_content(prompt)
 
-# Save the response to a JSON file
-# output_file = "check2.json"
-# with open(output_file, "w", encoding="utf-8") as f:
-#     f.write(response.text)
 
-# Print the response
-# print(response.text)
-
-
-# Clean Gemini response text
 raw_text = response.text.strip()
 if raw_text.startswith("```json"):
     raw_text = raw_text[len("```json"):].strip()
@@ -164,10 +136,10 @@ if raw_text.endswith("```"):
 
 gemini_data = json.loads(raw_text)
 
-# Merge flat (Gemini keys overwrite report keys if duplicate)
+
 final_data = {**report, **gemini_data}
 
-# Save only final merged JSON
+
 with open("final_report.json", "w", encoding="utf-8") as f:
     json.dump(final_data, f, indent=4, ensure_ascii=False)
 
