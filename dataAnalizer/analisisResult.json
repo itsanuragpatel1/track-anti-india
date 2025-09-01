@@ -1,0 +1,93 @@
+{
+    "statistical_analysis": {
+        "statistical_metrics": {
+            "total_tweets": 974,
+            "total_likes": 416890,
+            "total_comments": 25203,
+            "total_retweets": 35501,
+            "total_engagement": 477594,
+            "total_reach_estimated": 791702335,
+            "velocity_tweets_per_hour": 0.04,
+            "new_account_ratio": 0.1
+        },
+        "influencer_analysis": {
+            "most_influential": [
+                {
+                    "username": "sachin_rt",
+                    "followers": 40865983
+                },
+                {
+                    "username": "BCCI",
+                    "followers": 27735181
+                },
+                {
+                    "username": "BCCI",
+                    "followers": 27735180
+                },
+                {
+                    "username": "BCCI",
+                    "followers": 27735180
+                },
+                {
+                    "username": "BCCI",
+                    "followers": 27735180
+                }
+            ],
+            "most_engaging_posts": [
+                {
+                    "id": "1568171410400452610",
+                    "username": "rashidkhan_19",
+                    "engagement": 78116
+                },
+                {
+                    "id": "1701148716311449799",
+                    "username": "sachin_rt",
+                    "engagement": 51046
+                },
+                {
+                    "id": "1957734682218373496",
+                    "username": "BCCI",
+                    "engagement": 40315
+                },
+                {
+                    "id": "1957738817525272849",
+                    "username": "BCCI",
+                    "engagement": 39753
+                },
+                {
+                    "id": "1957730261296111733",
+                    "username": "BCCI",
+                    "engagement": 18164
+                }
+            ]
+        },
+        "content_analysis": {
+            "top_hashtags": [
+                "AsiaCup",
+                "AsiaCup2025",
+                "AkatsukiJapan",
+                "TeamIndia",
+                "ShubmanGill"
+            ],
+            "top_mentions": [
+                "BCCI",
+                "FIBAAsiaCup",
+                "ESPNAusNZ",
+                "BoriaMajumdar",
+                "anjanaomkashyap"
+            ]
+        }
+    },
+    "llm_analysis": {
+        "campaign_summary": "Analysis failed",
+        "potential_harms": [],
+        "top_talking_points": [],
+        "anti_india_indicators": [],
+        "coordination_indicators": [],
+        "risk_score": 0
+    },
+    "meta": {
+        "analysis_timestamp": "2025-08-28T13:14:39.753213",
+        "total_tweets_analyzed": 974
+    }
+}
